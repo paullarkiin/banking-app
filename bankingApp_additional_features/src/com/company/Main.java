@@ -5,17 +5,37 @@ import java.util.Scanner;
 
 public class Main {
 
-    public static void main(String[] args) {
-        
+    public static void main(String[] args) throws IOException, ClassNotFoundException {
+
+        StandardAccount standardAccount = new StandardAccount(1, 20.00);
+        LimitedAccount limitedAccount = new LimitedAccount(2, 20.00);
+
+
+        try {
+
+            // Reads saved .dat file and append it to new object.
+            FileInputStream fis = new FileInputStream("standardAccount.dat");
+            ObjectInputStream ois = new ObjectInputStream(fis);
+            standardAccount = (StandardAccount) ois.readObject();
+            ois.close();
+
+            FileInputStream Fis = new FileInputStream("limitedAccount.dat");
+            ObjectInputStream Ois = new ObjectInputStream(Fis);
+            limitedAccount = (LimitedAccount) Ois.readObject();
+            Ois.close();
+
+        } catch (Exception e) {
+            System.out.println(e.toString());
+        }
+
+
         int choice;
         int nextChoice;
 
         Scanner scanner = new Scanner(System.in);
 
-        StandardAccount account1 = new StandardAccount(1, 20.00);
-        LimitedAccount lAccount1 = new LimitedAccount(2, 20.00);
-
         do {
+
             System.out.println(" --- Bank Accounts --- ");
             System.out.println("What type of account do you want to use today? ");
             System.out.println("1. Standard Account");
@@ -40,31 +60,31 @@ public class Main {
 
 
                     if (nextChoice == 1) {
-
+                        scanner.nextLine();
                         System.out.println("Enter amount to be Deposited: ");
                         amount = scanner.nextDouble();
-                        account1.deposit(amount);
+                        standardAccount.deposit(amount);
                         System.out.println();
 
                     } else if (nextChoice == 2) {
-
                         System.out.println("Enter amount to be Withdraw: ");
+                        scanner.nextLine();
                         amount = scanner.nextDouble();
-                        account1.withdraw(amount);
+                        standardAccount.withdraw(amount);
                         System.out.println();
 
-                    } else if (nextChoice == 3) {
-
-                        System.out.println(account1.getBalance());
+                    }else if(nextChoice == 3) {
+                        System.out.printf("You now have a balance of: £ %.2f\n", standardAccount.getBalance());
                         System.out.println();
 
-                    } else if (nextChoice == 4) {
+                    }else if (nextChoice == 4) {
                         System.out.println("Bye");
                         System.exit(0);
 
                     } else {
                         System.out.println("Error: Please select an option between 1 - 4 and try again!");
                     }
+                    break;
 
                 case 2:
                     System.out.println("What account action would like to perform today? ");
@@ -76,28 +96,25 @@ public class Main {
 
                     nextChoice = scanner.nextInt();
 
-
                     if (nextChoice == 1) {
-
                         System.out.println("Enter amount to be Deposited: ");
                         amount = scanner.nextDouble();
-                        lAccount1.deposit(amount);
+                        limitedAccount.deposit(amount);
                         System.out.println();
 
                     } else if (nextChoice == 2) {
-
+                        scanner.nextLine();
                         System.out.println("Enter amount to be Withdraw: ");
                         amount = scanner.nextDouble();
-                        lAccount1.withdraw(amount);
+                        limitedAccount.withdraw(amount);
                         System.out.println();
 
-                    } else if (nextChoice == 3) {
-
-                        System.out.println(lAccount1.getBalance());
-                        System.out.println();
+                    } else if(nextChoice == 3)
+                    {
+                        System.out.printf("You now have a balance of: £ %.2f\n", limitedAccount.getBalance());
 
                     } else if (nextChoice == 4) {
-                        saveDetails(account1, lAccount1);
+                        saveObjects(standardAccount, limitedAccount);
                         System.out.println("Bye");
                         System.exit(0);
 
@@ -106,41 +123,22 @@ public class Main {
                     }
 
                 case 3:
-                    saveDetails(account1, lAccount1);
+                    saveObjects(standardAccount, limitedAccount);
                     break;
             }
         }
         while (choice != 3);
     }
 
+    public static void saveObjects(StandardAccount standardAccount, LimitedAccount limitedAccount) throws IOException {
+        FileOutputStream fos = new FileOutputStream("standardAccount.dat");
+        ObjectOutputStream oos = new ObjectOutputStream(fos);
+        oos.writeObject(standardAccount);
+        oos.close();
 
-    public static void saveDetails(StandardAccount standardAccount, LimitedAccount limitedAccount) {
-
-        // writes to csv
-        try (PrintWriter writer = new PrintWriter(new File("test.csv"))) {
-            StringBuilder sb = new StringBuilder();
-
-            sb.append("id");
-            sb.append(',');
-            sb.append("Balance");
-            sb.append('\n');
-
-            sb.append(standardAccount.getId());
-            sb.append(',');
-            sb.append(standardAccount.getBalance());
-            sb.append('\n');
-
-            sb.append(limitedAccount.getId());
-            sb.append(',');
-            sb.append(limitedAccount.getBalance());
-            sb.append('\n');
-
-            writer.write(sb.toString());
-
-            System.out.println("Done!");
-
-        } catch (FileNotFoundException e) {
-            System.out.println(e.getMessage());
-        }
+        FileOutputStream Fos = new FileOutputStream("limitedAccount.dat");
+        ObjectOutputStream Oos = new ObjectOutputStream(Fos);
+        Oos.writeObject(limitedAccount);
+        Oos.close();
     }
 }
