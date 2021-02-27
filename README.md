@@ -1,6 +1,6 @@
 # banking-app
 
-##  Banking App Java 
+##  Java app 
   - Interactive command line banking app using objects and serialization for persistence. 
 
 ## Android Screens 
