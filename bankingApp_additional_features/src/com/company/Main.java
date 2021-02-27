@@ -13,7 +13,7 @@ public class Main {
 
         try {
 
-            // Reads saved .dat file and append it to new object.
+            // Reads saved .dat file and append it to the above objects.
             FileInputStream fis = new FileInputStream("standardAccount.dat");
             ObjectInputStream ois = new ObjectInputStream(fis);
             standardAccount = (StandardAccount) ois.readObject();
